@@ -1,0 +1,4 @@
+{
+  "/(dashboard)/approve-spending/page": "app/(dashboard)/approve-spending/page.js",
+  "/(dashboard)/approved-spending/page": "app/(dashboard)/approved-spending/page.js"
+}
