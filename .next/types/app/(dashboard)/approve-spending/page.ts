@@ -1,4 +1,4 @@
-// File: /Applications/XAMPP/xamppfiles/htdocs/felysyum/admin/admin-nextjs/src/app/(dashboard)/approve-spending/page.tsx
+// File: D:\personal_apps\felysyum-admin\src\app\(dashboard)\approve-spending\page.tsx
 import * as entry from '../../../../../src/app/(dashboard)/approve-spending/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
