@@ -1,7 +1,4 @@
 {
-  "/(dashboard)/approve-spending/page": "app/(dashboard)/approve-spending/page.js",
-  "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(dashboard)/approved-spending/page": "app/(dashboard)/approved-spending/page.js",
-  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js"
+  "/not-found": "app/not-found.js",
+  "/(dashboard)/approve-spending/page": "app/(dashboard)/approve-spending/page.js"
 }

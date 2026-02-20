@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export default function Header({ onToggleSidebar }: HeaderProps) {
   const pathname = usePathname();
-  const admin = useAdmin();
+  const { admin, token } = useAdmin();
 
   const getPageTitle = () => {
     if (pathname === "/") return "Dashboard";

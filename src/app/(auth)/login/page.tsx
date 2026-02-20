@@ -54,7 +54,7 @@ export default function LoginPage() {
 
       document.cookie = `auth_token=${response.data.token}; path=/; max-age=${maxAge}; SameSite=Strict`;
 
-      localStorage.setItem("admin", JSON.stringify(response.data.admin));
+      localStorage.setItem("admin", JSON.stringify(response));
 
       router.push("/");
     } catch (err: unknown) {
