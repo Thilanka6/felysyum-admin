@@ -25,6 +25,8 @@ import {
   STAKE5DAYS_ABI,
 } from "@/app/contracts/stake5days";
 
+import { FELY_CONTRACT_ADDRESS, FELY_ABI } from "@/app/contracts/felyContract";
+
 export default function ApproveSpendingPage() {
   const [isConnected, setIsConnected] = useState(false);
   const [yourWalletAddress, setWalletAddress] = useState<string | null>(null);
@@ -253,63 +255,180 @@ export default function ApproveSpendingPage() {
     }
 
     try {
-      const resolvedAccount = ethers.getAddress(account);
-      const contract: ethers.Contract = await returnContract(month);
-      const capitalAmount = ethers.parseUnits(capital, 18);
-      const interestAmount = ethers.parseUnits(inter, 18);
+      setTransactionStatus("Preparing transaction...");
 
-      // ✅ Pre-flight: simulate the call first to get a readable error
-      try {
-        await contract.assignStake.staticCall(
-          resolvedAccount,
-          capitalAmount,
-          interestAmount,
-        );
-      } catch (simError: any) {
-        console.error("Simulation failed — tx would revert:", simError);
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const signer = await provider.getSigner();
+      const feeData = await provider.getFeeData();
 
-        // Attempt to decode the custom error using the contract's ABI
-        if (simError?.data) {
-          try {
-            const decoded = contract.interface.parseError(simError.data);
-            setTransactionStatus(`Revert: ${decoded?.name}(${decoded?.args})`);
-          } catch {
-            setTransactionStatus(`Revert with unknown error: ${simError.data}`);
-          }
-        }
-        return; // bail before sending
-      }
-
-      const tx = await contract.assignStake(
-        resolvedAccount,
-        capitalAmount,
-        interestAmount,
+      // ── Gas price with 20% bump to avoid replacement underpriced ────────────
+      const baseGasPrice = feeData.gasPrice ?? ethers.parseUnits("150", "gwei");
+      const gasPrice = (baseGasPrice * BigInt(120)) / BigInt(100); // +20%
+      console.log(
+        "gasPrice (with 20% bump):",
+        ethers.formatUnits(gasPrice, "gwei"),
+        "gwei",
       );
 
-      setTransactionStatus("Transaction Pending...");
-      const receipt = await tx.wait();
-      setTransactionStatus(`Transaction Successful! Hash: ${receipt.hash}`);
-      updateStakingStatus(stid, "completed");
-    } catch (error: any) {
-      console.error("Transaction failed:", error);
+      // ── Get current nonce (includes pending txs) ─────────────────────────────
+      const nonce = await provider.getTransactionCount(
+        await signer.getAddress(),
+        "pending",
+      );
+      console.log("Nonce:", nonce);
 
-      // Try to decode custom error from the contract ABI
-      const contract = await returnContract(month).catch(() => null);
-      if (contract && error?.data) {
-        try {
-          const decoded = contract.interface.parseError(error.data);
-          setTransactionStatus(
-            `Transaction Failed: ${decoded?.name}(${decoded?.args?.join(", ")})`,
-          );
-          return;
-        } catch {
-          /* fall through */
-        }
+      // ── Convert decimal strings → uint256 (18 decimals) ─────────────────────
+      const capitalBig: bigint = ethers.parseUnits(capital.trim(), 18);
+      const interBig: bigint = ethers.parseUnits(inter.trim(), 18);
+      const totalNeeded: bigint = capitalBig + interBig;
+
+      console.log("capital  :", capitalBig.toString());
+      console.log("inter    :", interBig.toString());
+      console.log("total    :", totalNeeded.toString());
+
+      // ── STEP 1: Get staking contract + address ───────────────────────────────
+      const stakingContract = await returnContract(month);
+      const stakingAddress = await stakingContract.getAddress();
+
+      // ── STEP 2: FELY token contract ──────────────────────────────────────────
+      const felyContract = new ethers.Contract(
+        FELY_CONTRACT_ADDRESS,
+        FELY_ABI,
+        signer,
+      );
+
+      // ── STEP 3: Check admin wallet FELY balance ──────────────────────────────
+      setTransactionStatus("Checking FELY balance...");
+      const walletBalance: bigint = await felyContract.balanceOf(
+        await signer.getAddress(),
+      );
+      console.log(
+        "Wallet FELY balance:",
+        ethers.formatUnits(walletBalance, 18),
+      );
+
+      if (walletBalance < totalNeeded) {
+        setTransactionStatus(
+          `❌ Insufficient FELY in wallet. Have: ${ethers.formatUnits(walletBalance, 18)}, Need: ${ethers.formatUnits(totalNeeded, 18)}`,
+        );
+        return;
       }
+
+      // ── STEP 4: Approve FELY spending (capital + inter) ──────────────────────
+      setTransactionStatus("Approving FELY spending... (1/2)");
+      console.log(
+        "Approving:",
+        stakingAddress,
+        "amount:",
+        totalNeeded.toString(),
+      );
+
+      const approveTx = await felyContract.approve(
+        stakingAddress,
+        totalNeeded,
+        {
+          gasPrice,
+          nonce, // explicit nonce — avoids replacement conflicts
+        },
+      );
 
       setTransactionStatus(
-        `Transaction Failed: ${error?.message ?? "Unknown error"}`,
+        `Approve tx sent: ${approveTx.hash} — confirming...`,
       );
+      console.log("Approve TX hash:", approveTx.hash);
+
+      const approveReceipt = await approveTx.wait(1);
+      if (!approveReceipt || approveReceipt.status !== 1) {
+        setTransactionStatus("❌ FELY approval failed on-chain.");
+        return;
+      }
+
+      console.log("✅ FELY approved successfully");
+      setTransactionStatus("FELY approved! Sending stake transaction... (2/2)");
+
+      // ── STEP 5: Get fresh nonce for next tx ──────────────────────────────────
+      const nonceForStake = await provider.getTransactionCount(
+        await signer.getAddress(),
+        "pending",
+      );
+      console.log("Nonce for stake tx:", nonceForStake);
+
+      // ── STEP 6: Estimate gas for assignStake ─────────────────────────────────
+      let gasLimit: bigint;
+      try {
+        const estimated = await stakingContract.assignStake.estimateGas(
+          account,
+          capitalBig,
+          interBig,
+        );
+        gasLimit = (estimated * BigInt(120)) / BigInt(100); // +20% buffer
+        console.log(
+          "Estimated gas:",
+          estimated.toString(),
+          "→ with buffer:",
+          gasLimit.toString(),
+        );
+      } catch (estimateErr: any) {
+        console.warn("Gas estimation failed:", estimateErr);
+        setTransactionStatus(
+          `Contract reverted during estimation: ${estimateErr?.reason ?? estimateErr?.message ?? "unknown"}`,
+        );
+        setTimeout(() => setTransactionStatus(null), 6000);
+        return;
+      }
+
+      // ── STEP 7: Call assignStake ─────────────────────────────────────────────
+      setTransactionStatus("Waiting for wallet confirmation... (2/2)");
+      const stakeTx = await stakingContract.assignStake(
+        account,
+        capitalBig,
+        interBig,
+        {
+          gasLimit,
+          gasPrice,
+          nonce: nonceForStake, // explicit nonce for stake tx
+        },
+      );
+
+      setTransactionStatus(`Stake tx sent: ${stakeTx.hash} — confirming...`);
+      console.log("Stake TX hash:", stakeTx.hash);
+
+      // ── STEP 8: Wait for confirmation ────────────────────────────────────────
+      const stakeReceipt = await stakeTx.wait(1);
+
+      if (stakeReceipt && stakeReceipt.status === 1) {
+        setTransactionStatus(`✅ Stake confirmed! Hash: ${stakeTx.hash}`);
+        console.log("Stake receipt:", stakeReceipt);
+        await updateStakingStatus(stid, "completed");
+        setTimeout(() => setTransactionStatus(null), 5000);
+      } else {
+        setTransactionStatus(
+          "❌ Stake transaction failed on-chain. Check Polygonscan.",
+        );
+        console.error("Failed stake receipt:", stakeReceipt);
+        setTimeout(() => setTransactionStatus(null), 6000);
+      }
+    } catch (error: any) {
+      console.error("Approve error:", error);
+
+      if (error?.code === "ACTION_REJECTED" || error?.code === 4001) {
+        setTransactionStatus("Transaction rejected by user.");
+      } else if (error?.code === "REPLACEMENT_UNDERPRICED") {
+        setTransactionStatus(
+          "❌ Replacement fee too low. Please wait for pending tx to clear or try again.",
+        );
+      } else if (error?.reason) {
+        setTransactionStatus(`Contract error: ${error.reason}`);
+      } else if (error?.data) {
+        console.error("Revert data:", error.data);
+        setTransactionStatus("Contract reverted. See console for revert data.");
+      } else if (error?.message) {
+        setTransactionStatus(`Error: ${error.message.slice(0, 150)}`);
+      } else {
+        setTransactionStatus("Transaction failed. See console.");
+      }
+
+      setTimeout(() => setTransactionStatus(null), 6000);
     }
   };
 
