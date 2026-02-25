@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
                         <div className="mt-4 text-center">
                             <Link
                                 href="/login"
-                                className="font-medium text-xs text-brand hover:text-brand-hover flex items-center justify-center gap-2 hover:gap-3 transition-all"
+                                className="font-medium text-xs text-[#F39F29] hover:text-[#CF7D1C] flex items-center justify-center gap-2 hover:gap-3 transition-all"
                             >
                                 <svg
                                     className="h-3 w-3"

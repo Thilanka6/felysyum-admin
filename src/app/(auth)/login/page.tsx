@@ -89,7 +89,7 @@ export default function LoginPage() {
               />
             </div>
             <h1 className="font-display text-3xl font-bold text-white mb-2">
-              Welcome to <span className="text-brand">Felysyum</span>
+              Welcome to <span className="text-[#F39F29]">Felysyum</span>
             </h1>
             <p className="text-base text-gray-400 max-w-md">
               Manage your digital ecosystem with precision and style. Access
@@ -118,7 +118,7 @@ export default function LoginPage() {
               Not a member?{" "}
               <a
                 href="#"
-                className="font-semibold text-brand hover:text-brand-hover hover:underline"
+                className="font-semibold text-[#F39F29] hover:text-[#CF7D1C] hover:underline"
               >
                 Contact Admin
               </a>
@@ -171,7 +171,7 @@ export default function LoginPage() {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 rounded border-gray-600 bg-dark-auth-700 text-brand focus:ring-brand focus:ring-offset-dark-auth-800"
+                    className="h-4 w-4 rounded border-gray-600 bg-dark-auth-700 text-[#F39F29] focus:ring-[#F39F29] focus:ring-offset-dark-auth-800"
                   />
                   <label
                     htmlFor="remember-me"
@@ -183,7 +183,7 @@ export default function LoginPage() {
                 <div className="text-xs">
                   <Link
                     href="/forgot-password"
-                    className="font-semibold text-brand hover:text-brand-hover"
+                    className="font-semibold text-[#F39F29] hover:text-[#CF7D1C]"
                   >
                     Forgot password?
                   </Link>
