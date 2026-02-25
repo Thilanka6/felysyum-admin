@@ -38,7 +38,7 @@ const config: Config = {
         },
       },
       boxShadow: {
-        'glow': '0 0 20px -5px rgba(198, 241, 40, 0.3)',
+        'glow': '0 0 20px -5px rgba(243, 159, 41, 0.3)',
       }
     },
   },
