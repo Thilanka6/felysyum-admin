@@ -21,21 +21,33 @@ export default function Sidebar({
   const router = useRouter();
   const pathname = usePathname();
   const [isStakeFelyOpen, setIsStakeFelyOpen] = useState(false);
+  const [isWithdrawalsOpen, setIsWithdrawalsOpen] = useState(false);
 
   // Auto-expand submenu if active
   useEffect(() => {
     if (
       pathname.includes("/approve-spending") ||
-      pathname.includes("/approved-spending")
+      pathname.includes("/approved-spending") ||
+      pathname.includes("/completed-withdrawal")
     ) {
       setIsStakeFelyOpen(true);
+    }
+    if (
+      pathname.includes("/pending-withdrawals") ||
+      pathname.includes("/paid-withdrawals")
+    ) {
+      setIsWithdrawalsOpen(true);
     }
   }, [pathname]);
 
   const isActive = (path: string) => pathname === path;
   const isStakeFelyActive =
     pathname.includes("/approve-spending") ||
-    pathname.includes("/approved-spending");
+    pathname.includes("/approved-spending") ||
+    pathname.includes("/completed-withdrawal");
+  const isWithdrawalsActive =
+    pathname.includes("/pending-withdrawals") ||
+    pathname.includes("/paid-withdrawals");
 
   const handleLogout = () => {
     document.cookie = "auth_token=; path=/; max-age=0";
@@ -163,6 +175,69 @@ export default function Sidebar({
               className={`block rounded-lg px-4 py-2 text-sm font-medium transition-all ${isActive("/approved-spending") ? "text-white" : "text-gray-400 hover:text-white"}`}
             >
               Approved List
+            </Link>
+            <Link
+              href="/completed-withdrawal"
+              className={`block rounded-lg px-4 py-2 text-sm font-medium transition-all ${isActive("/completed-withdrawal") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
+              Completed Withdrawal
+            </Link>
+          </div>
+
+          {/* Withdrawals Dropdown */}
+          <button
+            type="button"
+            onClick={() => {
+              if (isCollapsed) setIsCollapsed(false);
+              setIsWithdrawalsOpen(!isWithdrawalsOpen);
+            }}
+            className={`flex w-full items-center justify-between gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${isWithdrawalsActive ? "text-white bg-dark-800" : "text-gray-300 hover:bg-dark-800 hover:text-white"}`}
+            title="Withdrawals"
+          >
+            <div className="flex items-center gap-3">
+              <svg
+                className="h-5 w-5 flex-shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span
+                className={`whitespace-nowrap ${isCollapsed ? "hidden" : "block"}`}
+              >
+                Withdrawals
+              </span>
+            </div>
+            <svg
+              className={`h-4 w-4 bg-transparent transition-transform duration-200 ${isWithdrawalsOpen ? "rotate-180" : ""} ${isCollapsed ? "hidden" : "block"}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <div
+            className={`space-y-1 pl-11 ${isWithdrawalsOpen ? "block" : "hidden"} ${isCollapsed ? "hidden" : "block"}`}
+          >
+            <Link
+              href="/pending-withdrawals"
+              className={`block rounded-lg px-4 py-2 text-sm font-medium transition-all ${isActive("/pending-withdrawals") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
+              Pending Withdrawals
+            </Link>
+            <Link
+              href="/paid-withdrawals"
+              className={`block rounded-lg px-4 py-2 text-sm font-medium transition-all ${isActive("/paid-withdrawals") ? "text-white" : "text-gray-400 hover:text-white"}`}
+            >
+              Paid Withdrawals
             </Link>
           </div>
 
