@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
                 <div className="text-center">
                     <img
                         src="/assets/images/mat-logo.png"
-                        alt="Feliciamatrix"
+                        alt="Felysyum"
                         className="h-8 w-auto mx-auto mb-4"
                     />
                     <h2 className="text-xl font-bold leading-9 tracking-tight text-white font-display">
