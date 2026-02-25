@@ -84,12 +84,12 @@ export default function LoginPage() {
             <div className="mb-4">
               <img
                 src="/assets/images/mat-logo.png"
-                alt="Feliciamatrix"
+                alt="Felysyum"
                 className="h-10 w-auto mb-4"
               />
             </div>
             <h1 className="font-display text-3xl font-bold text-white mb-2">
-              Welcome to <span className="text-brand">Feliciamatrix</span>
+              Welcome to <span className="text-brand">Felysyum</span>
             </h1>
             <p className="text-base text-gray-400 max-w-md">
               Manage your digital ecosystem with precision and style. Access
@@ -105,7 +105,7 @@ export default function LoginPage() {
           <div className="lg:hidden mb-8 text-center">
             <img
               src="/assets/images/mat-logo.png"
-              alt="Feliciamatrix"
+              alt="Felysyum"
               className="h-8 w-auto mx-auto"
             />
           </div>
