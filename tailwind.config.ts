@@ -16,9 +16,9 @@ const config: Config = {
         primary: '#6366f1', // Indigo 500
         primaryHover: '#4f46e5', // Indigo 600
         brand: {
-          DEFAULT: '#C6F128', // Lime Green
-          hover: '#B5DC1C',
-          glow: 'rgba(198, 241, 40, 0.5)',
+          DEFAULT: '#F39F29', // Lime Green
+          hover: '#F39F29',
+          glow: 'rgba(243, 159, 41, 0.5)',
         },
         dark: {
           900: '#111827', // Gray 900 (Dashboard) / #0B0C10 (Auth) -
