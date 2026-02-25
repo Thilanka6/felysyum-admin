@@ -72,7 +72,7 @@ export default function Sidebar({
           {/* Large Logo */}
           <img
             src="/assets/images/mat-logo.png"
-            alt="Feliciamatrix"
+            alt="Felysyum"
             className={`h-8 w-auto transition-all duration-300 ${isCollapsed ? "hidden" : "block"}`}
           />
           {/* Small Logo */}
