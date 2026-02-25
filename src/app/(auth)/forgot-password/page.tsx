@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
                         <div>
                             <Link
                                 href="/reset-password"
-                                className="flex w-full justify-center rounded-lg bg-brand px-3 py-2.5 text-xs font-bold leading-6 text-dark-auth-900 shadow-glow hover:bg-brand-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand transition-all uppercase tracking-wide"
+                                className="flex w-full justify-center rounded-lg bg-[#F39F29] px-3 py-2.5 text-xs font-bold leading-6 text-dark-auth-900 shadow-glow hover:bg-[#CF7D1C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F39F29] transition-all uppercase tracking-wide"
                             >
                                 Send Reset Link
                             </Link>
