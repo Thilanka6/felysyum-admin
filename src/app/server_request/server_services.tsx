@@ -24,14 +24,13 @@ export const serverGetWithBareGet = async (
 ) => {
   try {
     const response = await axios.get(BASE_URL + classPath, {
-      params,
+      params: params,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
-    //console.log("Response:", JSON.stringify(response.data));
     return response.data;
   } catch (error) {
     console.error("API Error:", error);

@@ -206,6 +206,7 @@ export default function ApproveSpendingPage() {
         } else {
           setIsConnected(false);
           setWalletAddress(null);
+          setTransactionStatus("");
         }
       });
     }
