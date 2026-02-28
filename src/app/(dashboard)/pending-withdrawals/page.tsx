@@ -166,10 +166,14 @@ export default function PendingWithdrawalsPage() {
     }
   };
 
-  const updateWindrwalStatus = async (id: number | string) => {
+  const updateWindrwalStatus = async (
+    id: number | string,
+    transaction_hash: string,
+  ) => {
     try {
       const obj = {
         action: "approve",
+        transaction_hash: transaction_hash,
         reason:
           "Withdrawal approved - user verification completed successfully",
       };
@@ -301,7 +305,7 @@ export default function PendingWithdrawalsPage() {
       if (receipt && receipt.status === 1) {
         setTransactionStatus(`✅ Transfer confirmed! Hash: ${transferTx.hash}`);
         setTimeout(() => setTransactionStatus(null), 5000);
-        updateWindrwalStatus(recid);
+        updateWindrwalStatus(recid, transferTx.hash);
       } else {
         setTransactionStatus("❌ Transfer failed on-chain.");
         setTimeout(() => setTransactionStatus(null), 6000);

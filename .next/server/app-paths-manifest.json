@@ -1,6 +1,5 @@
 {
   "/not-found": "app/not-found.js",
-  "/(dashboard)/paid-withdrawals/page": "app/(dashboard)/paid-withdrawals/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(dashboard)/pending-withdrawals/page": "app/(dashboard)/pending-withdrawals/page.js",
   "/(dashboard)/page": "app/(dashboard)/page.js"
 }

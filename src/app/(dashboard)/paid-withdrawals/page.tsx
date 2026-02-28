@@ -16,6 +16,7 @@ export default function PaidWithdrawalsPage() {
     wallet_address: string;
     fely_amount: string;
     withdrawal_date: string;
+    transaction_hash: string;
     status: string;
   };
 
@@ -54,6 +55,7 @@ export default function PaidWithdrawalsPage() {
           usdt_amount: item.amounts.usdt_amount,
           fely_amount: item.amounts.fely_amount,
           withdrawal_date: item.dates.withdrawal_date,
+          transaction_hash: item.dates.wallet_address,
           status: item.status.text,
         })),
       );
