@@ -230,10 +230,25 @@ export default function ApproveSpendingPage() {
         Bearer,
       );
       console.log(MyStakingData);
-      setStakeData(MyStakingData.data.stakings);
+
+      const data = MyStakingData.data.stakings;
+
+      setStakeData(
+        data.map((item: any) => ({
+          id: item.id,
+          user_id: item.user.id,
+          wallet_address: item.wallet_address,
+          usdt_amount: item.amounts.usdt_amount,
+          fely_amount: item.amounts.fely_amount,
+          fely_bonus_amount: item.amounts.fely_bonus_amount, // fixed: was item.amount.fely_bonus_amount
+          month: item.staking_info.month,
+          transaction_hash: item.transaction_hash,
+          status: item.status.display,
+        })),
+      );
     } catch (error) {
-      console.error("Error connecting wallet:", error);
-      setTransactionStatus("Failed to connect wallet");
+      console.error("Error fetching stakings:", error);
+      setTransactionStatus("Failed to fetch staking data");
       setTimeout(() => setTransactionStatus(null), 3000);
     }
   };
@@ -400,7 +415,7 @@ export default function ApproveSpendingPage() {
       if (stakeReceipt && stakeReceipt.status === 1) {
         setTransactionStatus(`✅ Stake confirmed! Hash: ${stakeTx.hash}`);
         console.log("Stake receipt:", stakeReceipt);
-        await updateStakingStatus(stid, "completed");
+        await updateStakingStatus(stid, "active", stakeTx.hash);
         setTimeout(() => setTransactionStatus(null), 5000);
       } else {
         setTransactionStatus(
@@ -453,10 +468,15 @@ export default function ApproveSpendingPage() {
     }
   };
 
-  const updateStakingStatus = async (id: number | string, st: string) => {
+  const updateStakingStatus = async (
+    id: number | string,
+    st: string,
+    tans_hash: string,
+  ) => {
     try {
       const obj = {
         status: st,
+        stake_transaction_hash: tans_hash,
       };
 
       const rtn = await serverPatchWithBareGet(
@@ -532,25 +552,25 @@ export default function ApproveSpendingPage() {
             <thead className="bg-gray-50 text-[10px] uppercase text-gray-500">
               <tr>
                 <th className="px-4 py-2 font-semibold whitespace-nowrap md:px-6 md:py-3">
-                  user_id
+                  user id
                 </th>
                 <th className="px-4 py-2 font-semibold whitespace-nowrap md:px-6 md:py-3">
-                  wallet_address
+                  wallet address
                 </th>
                 <th className="px-4 py-2 font-semibold whitespace-nowrap md:px-6 md:py-3">
-                  transaction_hash
+                  transaction hash
                 </th>
                 <th className="px-4 py-2 font-semibold whitespace-nowrap md:px-6 md:py-3">
                   month
                 </th>
                 <th className="px-4 py-2 font-semibold whitespace-nowrap md:px-6 md:py-3">
-                  usdt_amount
+                  usdt amount
                 </th>
                 <th className="px-4 py-2 font-semibold text-center whitespace-nowrap md:px-6 md:py-3">
-                  fely_amount
+                  fely amount
                 </th>
                 <th className="px-4 py-2 font-semibold text-center whitespace-nowrap md:px-6 md:py-3">
-                  fely_bonus_amount
+                  fely bonus amount
                 </th>
                 <th className="px-4 py-2 font-semibold text-center whitespace-nowrap md:px-6 md:py-3">
                   status
@@ -599,7 +619,13 @@ export default function ApproveSpendingPage() {
                       </button>
 
                       <button
-                        onClick={() => updateStakingStatus(row.id, "cancelled")}
+                        onClick={() =>
+                          updateStakingStatus(
+                            row.id,
+                            "cancelled",
+                            "0x0000000000000000000000000000000000000000000000000000000000000000",
+                          )
+                        }
                         className="rounded bg-red-500 px-3 py-1 text-[10px] font-bold text-white shadow-sm hover:bg-red-600 transition-all uppercase tracking-wide"
                       >
                         Reject
