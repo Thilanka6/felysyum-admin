@@ -55,7 +55,7 @@ export default function PaidWithdrawalsPage() {
           usdt_amount: item.amounts.usdt_amount,
           fely_amount: item.amounts.fely_amount,
           withdrawal_date: item.dates.withdrawal_date,
-          transaction_hash: item.dates.wallet_address,
+          transaction_hash: item.transaction.hash,
           status: item.status.text,
         })),
       );
@@ -214,14 +214,14 @@ export default function PaidWithdrawalsPage() {
                     <div className="flex items-center gap-2">
                       <span
                         className="block truncate max-w-[200px]"
-                        title={row.wallet_address}
+                        title={row.transaction_hash}
                       >
-                        {row.wallet_address}
+                        {row.transaction_hash}
                       </span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          copyToClipboard(row.wallet_address, row.id);
+                          copyToClipboard(row.transaction_hash, row.id);
                         }}
                         className="text-gray-400 hover:text-brand transition-colors"
                         title="Copy Hash"
