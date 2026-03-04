@@ -1,6 +1,9 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone", // ← packages everything needed to run
+  output: "export",
+  trailingSlash: true, // ← this is critical, generates /dashboard/index.html
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

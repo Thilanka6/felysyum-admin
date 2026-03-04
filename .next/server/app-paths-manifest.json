@@ -1,13 +1,9 @@
 {
-  "/_not-found": "app/_not-found.js",
-  "/(dashboard)/approved-spending/page": "app/(dashboard)/approved-spending/page.js",
-  "/(auth)/forgot-password/page": "app/(auth)/forgot-password/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(auth)/reset-password/page": "app/(auth)/reset-password/page.js",
-  "/(dashboard)/approve-spending/page": "app/(dashboard)/approve-spending/page.js",
-  "/(dashboard)/completed-withdrawal/page": "app/(dashboard)/completed-withdrawal/page.js",
+  "/not-found": "app/not-found.js",
   "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js",
-  "/(dashboard)/paid-withdrawals/page": "app/(dashboard)/paid-withdrawals/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(dashboard)/completed-withdrawal/page": "app/(dashboard)/completed-withdrawal/page.js",
+  "/(dashboard)/approved-spending/page": "app/(dashboard)/approved-spending/page.js",
+  "/(dashboard)/approve-spending/page": "app/(dashboard)/approve-spending/page.js",
   "/(dashboard)/pending-withdrawals/page": "app/(dashboard)/pending-withdrawals/page.js"
 }

@@ -1,6 +1,8 @@
 export function logout() {
-  // Clear the cookie by setting max-age to 0
-  document.cookie = "auth_token=; path=/; max-age=0; SameSite=Strict";
+  // Clear cookie
+  document.cookie = "auth_token=; path=/; max-age=0";
+  // Clear localStorage
   localStorage.removeItem("admin");
+  // Redirect
   window.location.href = "/login";
 }

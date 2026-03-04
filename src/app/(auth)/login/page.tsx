@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { serverPostRequest } from "@/app/server_request/server_services";
 
 interface AdminData {
@@ -27,6 +27,18 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Add inside LoginPage(), before the return
+  useEffect(() => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth_token="))
+      ?.split("=")[1];
+
+    if (token) {
+      router.replace("/");
+    }
+  }, [router]);
 
   const loginAction = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

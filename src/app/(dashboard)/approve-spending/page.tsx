@@ -67,6 +67,8 @@ export default function ApproveSpendingPage() {
   useEffect(() => {
     if (token) {
       getmyStaking(token);
+      console.log("sss");
+      console.log(token);
     }
   }, [token]);
 
