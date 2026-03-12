@@ -1,15 +1,15 @@
 {
   "pages": {
+    "/(dashboard)/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/page.js"
+    ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
-    ],
-    "/(dashboard)/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(dashboard)/page.js"
     ],
     "/(dashboard)/layout": [
       "static/chunks/webpack.js",
@@ -35,6 +35,21 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(dashboard)/approved-spending/page.js"
+    ],
+    "/(dashboard)/completed-withdrawal/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/completed-withdrawal/page.js"
+    ],
+    "/(dashboard)/pending-withdrawals/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/pending-withdrawals/page.js"
+    ],
+    "/(dashboard)/paid-withdrawals/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/paid-withdrawals/page.js"
     ],
     "/not-found": [
       "static/chunks/webpack.js",

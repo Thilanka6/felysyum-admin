@@ -47,14 +47,28 @@ export default function ApprovedSpendingPage() {
           id: item.id,
           user_id: item.user.id,
           wallet_address: item.wallet_address,
-          usdt_amount: item.amounts.usdt_amount,
-          fely_amount: item.amounts.fely_amount,
-          fely_bonus_amount: item.amounts.fely_bonus_amount, // fixed: was item.amount.fely_bonus_amount
-          month: item.staking_info.month,
+          usdt_amount: item.usdt_amount,
+          fely_amount: item.fely_amount,
+          fely_bonus_amount: item.fely_bonus_amount,
+          month: item.month,
           transaction_hash: item.transaction_hash,
-          status: item.status.display,
+          status: item.status_display,
         })),
       );
+
+      // setPendingWithdrawal(
+      //   data.map((item: any) => ({
+      //     id: item.id,
+      //     user_id: item.user.id,
+      //     wallet_address: item.wallet_address,
+      //     usdt_amount: item.amounts.usdt_amount,
+      //     fely_amount: item.amounts.fely_amount,
+      //     fely_bonus_amount: item.amounts.fely_bonus_amount, // fixed: was item.amount.fely_bonus_amount
+      //     month: item.staking_info.month,
+      //     transaction_hash: item.transaction_hash,
+      //     status: item.status.display,
+      //   })),
+      // );
     } catch (error) {
       console.error("Error fetching stakings:", error);
     }
