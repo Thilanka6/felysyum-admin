@@ -38,3 +38,24 @@
 
 # Handle custom 404 page for Apache
 ErrorDocument 404 /404.html
+
+# --- SECURITY HEADERS ---
+<IfModule mod_headers.c>
+  # Clickjacking Protection
+  Header set X-Frame-Options "SAMEORIGIN"
+  
+  # Prevent MIME type sniffing
+  Header set X-Content-Type-Options "nosniff"
+  
+  # Cross-Site Scripting (XSS) Protection
+  Header set X-XSS-Protection "1; mode=block"
+  
+  # Referrer Policy
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Enforce HTTPS (HSTS)
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  
+  # Content Security Policy (Basic setup, uncomment and adjust if needed)
+  # Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://felysyum.cloud"
+</IfModule>

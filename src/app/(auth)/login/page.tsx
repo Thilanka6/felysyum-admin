@@ -62,9 +62,16 @@ export default function LoginPage() {
       }
 
       const expiresAt = new Date(response.data.expires_at).getTime();
-      const maxAge = Math.floor((expiresAt - Date.now()) / 1000);
+      let maxAge = Math.floor((expiresAt - Date.now()) / 1000);
+      
+      // Security Enhancement: Limit admin session to maximum 2 hours (7200 seconds)
+      const MAX_ADMIN_SESSION = 7200;
+      if (maxAge > MAX_ADMIN_SESSION || maxAge <= 0) {
+        maxAge = MAX_ADMIN_SESSION;
+      }
 
-      document.cookie = `auth_token=${response.data.token}; path=/; max-age=${maxAge}; SameSite=Strict`;
+      // Security Enhancement: Added Secure flag for HTTPS
+      document.cookie = `auth_token=${response.data.token}; path=/; max-age=${maxAge}; SameSite=Strict; Secure`;
 
       localStorage.setItem("admin", JSON.stringify(response));
 
