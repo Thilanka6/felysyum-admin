@@ -1,7 +1,16 @@
 {
   "/(dashboard)/page": "app/(dashboard)/page.js",
+<<<<<<< HEAD
   "/(dashboard)/paid-withdrawals/page": "app/(dashboard)/paid-withdrawals/page.js",
   "/(dashboard)/olympus/pending-withdrawals/page": "app/(dashboard)/olympus/pending-withdrawals/page.js",
   "/(dashboard)/olympus/paid-withdrawals/page": "app/(dashboard)/olympus/paid-withdrawals/page.js",
   "/(auth)/login/page": "app/(auth)/login/page.js"
+=======
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(dashboard)/approve-spending/page": "app/(dashboard)/approve-spending/page.js",
+  "/(dashboard)/pending-withdrawals/page": "app/(dashboard)/pending-withdrawals/page.js",
+  "/(dashboard)/approved-spending/page": "app/(dashboard)/approved-spending/page.js",
+  "/(dashboard)/completed-withdrawal/page": "app/(dashboard)/completed-withdrawal/page.js",
+  "/(dashboard)/paid-withdrawals/page": "app/(dashboard)/paid-withdrawals/page.js"
+>>>>>>> origin/main
 }
