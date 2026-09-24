@@ -1,1 +1,1 @@
-export const BASE_URL = "https://felysyum.cloud/api";
+export const BASE_URL = "https://dev.felysyum.cloud/api";
