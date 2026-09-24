@@ -36,10 +36,30 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(dashboard)/approved-spending/page.js"
     ],
-    "/not-found": [
+    "/(dashboard)/completed-withdrawal/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/app/(dashboard)/completed-withdrawal/page.js"
+    ],
+    "/(dashboard)/paid-withdrawals/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/paid-withdrawals/page.js"
+    ],
+    "/(dashboard)/pending-withdrawals/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/pending-withdrawals/page.js"
+    ],
+    "/(dashboard)/olympus/pending-withdrawals/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/olympus/pending-withdrawals/page.js"
+    ],
+    "/(dashboard)/olympus/paid-withdrawals/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/olympus/paid-withdrawals/page.js"
     ]
   }
 }

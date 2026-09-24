@@ -1,7 +1,7 @@
 {
-  "/not-found": "app/not-found.js",
   "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/(dashboard)/approve-spending/page": "app/(dashboard)/approve-spending/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(dashboard)/approved-spending/page": "app/(dashboard)/approved-spending/page.js"
+  "/(dashboard)/paid-withdrawals/page": "app/(dashboard)/paid-withdrawals/page.js",
+  "/(dashboard)/olympus/pending-withdrawals/page": "app/(dashboard)/olympus/pending-withdrawals/page.js",
+  "/(dashboard)/olympus/paid-withdrawals/page": "app/(dashboard)/olympus/paid-withdrawals/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js"
 }

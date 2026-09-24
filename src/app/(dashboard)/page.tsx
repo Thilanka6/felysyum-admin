@@ -1,57 +1,118 @@
-export default function DashboardPage() {
-    return (
-        <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4 md:gap-6">
-            {/* Total Users */}
-            <div className="rounded-xl bg-white p-4 shadow-sm border border-gray-100 md:p-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <p className="text-xs font-medium text-gray-500 md:text-sm">Total Users</p>
-                        <p className="text-2xl font-bold text-gray-900 mt-1 md:text-3xl">12,345</p>
-                    </div>
-                    <div className="rounded-full bg-blue-50 p-2 text-blue-600 md:p-3">
-                        <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                </div>
-                <div className="mt-4 flex items-center text-xs md:text-sm">
-                    <span className="text-green-500 font-medium flex items-center">
-                        <svg className="h-3 w-3 mr-1 md:h-4 md:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        +2.5%
-                    </span>
-                    <span className="ml-2 text-gray-400">from last month</span>
-                </div>
-            </div>
+"use client";
 
-            {/* Total Volume */}
-            <div className="rounded-xl bg-white p-4 shadow-sm border border-gray-100 md:p-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <p className="text-xs font-medium text-gray-500 md:text-sm">Total Volume</p>
-                        <p className="text-2xl font-bold text-gray-900 mt-1 md:text-3xl">$4.2M</p>
-                    </div>
-                    <div className="rounded-full bg-green-50 p-2 text-green-600 md:p-3">
-                        <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                </div>
-                <div className="mt-4 flex items-center text-xs md:text-sm">
-                    <span className="text-green-500 font-medium flex items-center">
-                        <svg className="h-3 w-3 mr-1 md:h-4 md:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        +12%
-                    </span>
-                    <span className="ml-2 text-gray-400">from last month</span>
-                </div>
-            </div>
+import { useEffect, useState } from "react";
+import { useAdmin } from "@/hooks/useAdmin";
+import { serverGetWithBareGet } from "@/app/server_request/server_services";
+import Link from "next/link";
+
+export default function DashboardPage() {
+  const { token } = useAdmin();
+  const [pendingCount, setPendingCount] = useState<number | null>(null);
+  const [paidCount, setPaidCount] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) return;
+    const fetchAll = async () => {
+      try {
+        const [pend, paid] = await Promise.allSettled([
+          serverGetWithBareGet("", "/admin/divine-withdrawals?page=1&per_page=1000&status=pending", token),
+          serverGetWithBareGet("", "/admin/divine-withdrawals?page=1&per_page=1000&status=approved", token),
+        ]);
+
+        if (pend.status === "fulfilled") {
+          const d = pend.value;
+          const list = d?.data?.withdrawals ?? d?.withdrawals ?? [];
+          setPendingCount(d?.data?.pagination?.total ?? d?.pagination?.total ?? list.length);
+        } else {
+          setPendingCount(0);
+        }
+
+        if (paid.status === "fulfilled") {
+          const d = paid.value;
+          const list = d?.data?.withdrawals ?? d?.withdrawals ?? [];
+          setPaidCount(d?.data?.pagination?.total ?? d?.pagination?.total ?? list.length);
+        } else {
+          setPaidCount(0);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, [token]);
+
+  return (
+    <div className="w-full space-y-4">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-base font-bold text-gray-800">Dashboard</h1>
+          <p className="text-[11px] text-gray-400 mt-0.5">Olympus withdrawal overview</p>
         </div>
-    );
+        <nav className="flex items-center gap-1 text-[11px] text-gray-400">
+          <span className="text-blue-600 font-semibold">Dashboard</span>
+        </nav>
+      </div>
+
+      {/* ── Stats Cards ── */}
+      <div className="flex flex-wrap items-center gap-3">
+        {/* Pending */}
+        <Link
+          href="/olympus/pending-withdrawals"
+          className="group flex w-full sm:w-56 items-center gap-3 rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm hover:shadow-md hover:border-amber-200 transition-all duration-150"
+        >
+          <div className="rounded-md bg-amber-50 p-1.5 text-amber-500">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Pending</p>
+            <p className={`text-base font-bold leading-none mt-0.5 ${loading ? "animate-pulse text-gray-200" : "text-gray-800"}`}>
+              {loading ? "—" : (pendingCount ?? 0).toLocaleString()}
+            </p>
+          </div>
+          <svg className="h-3.5 w-3.5 text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+
+        {/* Paid */}
+        <Link
+          href="/olympus/paid-withdrawals"
+          className="group flex w-full sm:w-56 items-center gap-3 rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all duration-150"
+        >
+          <div className="rounded-md bg-emerald-50 p-1.5 text-emerald-500">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Paid</p>
+            <p className={`text-base font-bold leading-none mt-0.5 ${loading ? "animate-pulse text-gray-200" : "text-gray-800"}`}>
+              {loading ? "—" : (paidCount ?? 0).toLocaleString()}
+            </p>
+          </div>
+          <svg className="h-3.5 w-3.5 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      </div>
+
+      {/* ── Summary Bar ── */}
+      <div className="inline-flex items-center gap-4 rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
+        <div className="flex items-center gap-1.5">
+          <svg className="h-3.5 w-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="text-[11px] font-medium text-gray-500">
+            Total: <span className="font-bold text-gray-800">{loading ? "—" : ((pendingCount ?? 0) + (paidCount ?? 0)).toLocaleString()}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 }
